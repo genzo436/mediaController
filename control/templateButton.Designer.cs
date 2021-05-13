@@ -1,7 +1,7 @@
 ﻿
 namespace mediaController.control
 {
-  partial class PrevButton
+  partial class TemplateButton
   {
     /// <summary> 
     /// Required designer variable.
@@ -31,22 +31,22 @@ namespace mediaController.control
     {
       this.SuspendLayout();
       // 
-      // PrevButton
+      // TemplateButton
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Control;
-      this.BackgroundImage = global::mediaController.Properties.Resources.prevBasic;
+      this.BackgroundImage = global::mediaController.Properties.Resources.emptyBasic;
       this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       this.DoubleBuffered = true;
-      this.Name = "PrevButton";
+      this.Name = "TemplateButton";
       this.Size = new System.Drawing.Size(30, 30);
-      this.SizeChanged += new System.EventHandler(this.UserControl1_SizeChanged);
-      this.Paint += new System.Windows.Forms.PaintEventHandler(this.PrevButton_Paint);
-      this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UserControl1_MouseDown);
-      this.MouseEnter += new System.EventHandler(this.UserControl1_MouseHover);
-      this.MouseLeave += new System.EventHandler(this.UserControl1_MouseLeave);
-      this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UserControl1_MouseUp);
+      this.SizeChanged += new System.EventHandler(this.UserControlSizeChanged);
+      this.Paint += new System.Windows.Forms.PaintEventHandler(this.UserControlPaint);
+      this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UserControlMouseDown);
+      this.MouseEnter += new System.EventHandler(this.UserControlMouseHover);
+      this.MouseLeave += new System.EventHandler(this.UserControlMouseLeave);
+      this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UserControlMouseUp);
       this.ResumeLayout(false);
 
     }

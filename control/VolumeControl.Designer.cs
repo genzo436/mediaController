@@ -42,6 +42,7 @@ namespace mediaController.control
       this.Name = "VolumeControl";
       this.Size = new System.Drawing.Size(30, 30);
       this.SizeChanged += new System.EventHandler(this.UserControl1_SizeChanged);
+      this.Click += new System.EventHandler(this.VolumeControl_Click);
       this.Paint += new System.Windows.Forms.PaintEventHandler(this.VolumeControl_Paint);
       this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UserControl1_MouseDown);
       this.MouseEnter += new System.EventHandler(this.UserControl1_MouseHover);

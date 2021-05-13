@@ -5,73 +5,70 @@ using System.Windows.Forms;
 
 namespace mediaController.control
 {
-  public partial class PrevButton : UserControl
+  public partial class TemplateButton : UserControl
   {
     enum Status { INACTIVE, SELECTED, CLICKED };
     Status status;
-    public PrevButton()
+
+    public Bitmap[] statusImages =
+    {
+      new Bitmap(Properties.Resources.emptyBasic),
+      new Bitmap(Properties.Resources.emptySelected),
+      new Bitmap(Properties.Resources.emptyClicked),
+    };
+    public TemplateButton()
     {
       InitializeComponent();
+      InitializeInternals();
+    }
+    private void InitializeInternals()
+    {
       status = Status.INACTIVE;
       this.SetStyle(ControlStyles.StandardClick, true);
       this.SetStyle(ControlStyles.StandardDoubleClick, false);
-      SetRegion();
+      SetControlRegion();
     }
-
-    private void SetRegion()
+    internal void SetImages(Bitmap inactive, Bitmap selected, Bitmap clicked)
+    {
+      statusImages[(int)Status.INACTIVE] = new Bitmap(inactive);
+      statusImages[(int)Status.SELECTED] = new Bitmap(selected);
+      statusImages[(int)Status.CLICKED] = new Bitmap(clicked);
+    }
+    private void SetControlRegion()
     {
       // TODO: change code for any shape, might be possible with collor mapping
       GraphicsPath grPath = new GraphicsPath();
       grPath.AddEllipse(0, 0, this.Size.Width, this.Size.Height);
       this.Region = new System.Drawing.Region(grPath);
     }
-    private void UserControl1_MouseHover(object sender, EventArgs e)
+    private void UserControlMouseHover(object sender, EventArgs e)
     {
       status = Status.SELECTED;
       this.Invalidate();
     }
-    private void UserControl1_MouseDown(object sender, MouseEventArgs e)
+    private void UserControlMouseDown(object sender, MouseEventArgs e)
     {
       status = Status.CLICKED;
       this.Invalidate();
     }
-    private void UserControl1_MouseLeave(object sender, EventArgs e)
+    private void UserControlMouseLeave(object sender, EventArgs e)
     {
       status = Status.INACTIVE;
       this.Invalidate();
     }
-    private void UserControl1_MouseUp(object sender, MouseEventArgs e)
+    private void UserControlMouseUp(object sender, MouseEventArgs e)
     {
       status = Status.SELECTED;
       this.Invalidate();
     }
-    private void UserControl1_SizeChanged(object sender, EventArgs e)
+    private void UserControlSizeChanged(object sender, EventArgs e)
     {
-      SetRegion();
+      SetControlRegion();
     }
-
-    private void PrevButton_Paint(object sender, PaintEventArgs e)
+    private void UserControlPaint(object sender, PaintEventArgs e)
     {
-      switch (status)
-      {
-        case Status.CLICKED:
-          {
-            DrawBackground(e, global::mediaController.Properties.Resources.prevClicked);
-          }
-          break;
-        case Status.SELECTED:
-          {
-            DrawBackground(e, global::mediaController.Properties.Resources.prevPreselect);
-          }
-          break;
-        default:
-          {
-            DrawBackground(e, global::mediaController.Properties.Resources.prevBasic);
-          }
-          break;
-      }
+      DrawBackground(e, statusImages[(int)status]);
     }
-
     private void DrawBackground(PaintEventArgs e, Bitmap image)
     {
       e.Graphics.DrawImage(

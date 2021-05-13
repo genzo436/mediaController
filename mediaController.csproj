@@ -11,10 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="control\VolumeControl.cs">
+    <Compile Update="control\templateButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="control\PrevButton.cs">
+    <Compile Update="control\VolumeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">

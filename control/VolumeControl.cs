@@ -1,38 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Forms;
 
 namespace mediaController.control
 {
-  public partial class VolumeControl : UserControl , INotifyPropertyChanged
+  public partial class VolumeControl : UserControl, INotifyPropertyChanged
   {
-    private int value;
+    const int MAX_VALUE = 100;
+    const int MIN_VALUE = 0;
+
+    static readonly Bitmap[] imgInactive = {
+      new Bitmap(Properties.Resources._0basic),
+      new Bitmap(Properties.Resources._1basic),
+      new Bitmap(Properties.Resources._2basic),
+      new Bitmap(Properties.Resources._3basic),
+    };
+    static readonly Bitmap[] imgSelected = {
+      new Bitmap(Properties.Resources._0preSelected),
+      new Bitmap(Properties.Resources._1preSelected),
+      new Bitmap(Properties.Resources._2preSelected),
+      new Bitmap(Properties.Resources._3preSelected),
+    };
+    static readonly Bitmap[] imgClicked = {
+      new Bitmap(Properties.Resources._0clicked),
+      new Bitmap(Properties.Resources._1clicked),
+      new Bitmap(Properties.Resources._2clicked),
+      new Bitmap(Properties.Resources._3clicked),
+    };
+    private readonly Bitmap[][] buttonStatus = { imgInactive, imgSelected, imgClicked };
+
+    int value;
     private bool muted;
-    enum Status {CLICKED, SELECTED, INACTIVE}
+    enum Status { INACTIVE, SELECTED, CLICKED }
     Status status;
 
     Pen pen;
     Rectangle rectangle;
     Color valueColor = Color.Green;
-
+    
+    bool mouseMoved;
     Point cursorInit;
     bool changingValue;
     int originalValue;
 
     public int Value { get => value; 
       set {
-        this.value = value;
-        NotifyPropertyChanged();
+        if (value < MIN_VALUE) { this.value = MIN_VALUE; }
+        else if (value > MAX_VALUE) { this.value = MAX_VALUE; }
+        else { this.value = value; }
       } 
     }
 
-    public VolumeControl()
+    public bool Muted { get => muted; set => muted = value; }
+
+  public VolumeControl()
     {
       InitializeComponent();
       status = Status.INACTIVE;
@@ -47,7 +71,7 @@ namespace mediaController.control
       GraphicsPath grPath = new GraphicsPath();
       grPath.AddEllipse(0, 0, this.Size.Width, this.Size.Height);
       this.Region = new System.Drawing.Region(grPath);
-      muted = false;
+      Muted = false;
       pen = new Pen(valueColor, Math.Max(this.Size.Width,this.Size.Height)*0.08F);
       rectangle = new Rectangle(2, 2, this.Size.Width - 4, this.Size.Height - 4);
     }
@@ -58,10 +82,10 @@ namespace mediaController.control
     }
     private void UserControl1_MouseDown(object sender, MouseEventArgs e)
     {
+      mouseMoved = false;
       originalValue = value;
       changingValue = true;
       cursorInit = Cursor.Position;
-
 
       status = Status.CLICKED;
       this.Invalidate(this.Region);
@@ -84,110 +108,28 @@ namespace mediaController.control
     }
     public int SetValue(int volume)
     {
-      if (volume < 0) { volume = 0; }
-      else if (volume > 100) { volume = 100; }
+      
       this.Value = volume;
       return this.Value;
     }
 
     private void UpdateGraphics(Graphics g)
     {
-      Image aux;
-      if (value == 0 || muted)
-      {
-        switch (status)
-        {
-          case Status.CLICKED:
-            {
-              aux = global::mediaController.Properties.Resources._0clicked;
-            }break;
-          case Status.SELECTED:
-            {
-              aux = global::mediaController.Properties.Resources._0preSelected;
-            }
-            break;
-          default:
-            {
-              aux = global::mediaController.Properties.Resources._0basic;
-            }
-            break;
-        }
-      }
-      else if (value <= 33)
-      {
-        switch (status)
-        {
-          case Status.CLICKED:
-            {
-              aux  = global::mediaController.Properties.Resources._1clicked;
-            }
-            break;
-          case Status.SELECTED:
-            {
-              aux  = global::mediaController.Properties.Resources._1preSelected;
-            }
-            break;
-          default:
-            {
-              aux = global::mediaController.Properties.Resources._1basic;
-            }
-            break;
-        }
-      }
-      else if (value <= 67)
-      {
-        switch (status)
-        {
-          case Status.CLICKED:
-            {
-              aux = global::mediaController.Properties.Resources._2clicked;
-            }
-            break;
-          case Status.SELECTED:
-            {
-              aux = global::mediaController.Properties.Resources._2preSelected;
-            }
-            break;
-          default:
-            {
-              aux = global::mediaController.Properties.Resources._2basic;
-            }
-            break;
-        }
-      }
-      else
-      {
-        switch (status)
-        {
-          case Status.CLICKED:
-            {
-              aux = global::mediaController.Properties.Resources._3clicked;
-            }
-            break;
-          case Status.SELECTED:
-            {
-              aux = global::mediaController.Properties.Resources._3preSelected;
-            }
-            break;
-          default:
-            {
-              aux = global::mediaController.Properties.Resources._3basic;
-            }
-            break;
-        }
-      }
+      int statusOptions = buttonStatus[(int)status].Length - 1;
+      double volume = muted ? 0 : Math.Ceiling(1.0 * value * statusOptions / MAX_VALUE);
+      Bitmap statusImage = buttonStatus[(int)status][(int)volume];
       g.DrawImage(
-        aux,
+        statusImage,
         new Rectangle(0, 0, this.Size.Width, this.Size.Height),
-        new Rectangle(0, 0, aux.Width, aux.Height),
+        new Rectangle(0, 0, statusImage.Width, statusImage.Height),
         GraphicsUnit.Pixel
       );
-      g.DrawArc(pen, rectangle, 0, ProcessVolume());
+      g.DrawArc(pen, rectangle, 0, ScaleVolumeToFullCircle());
     }
 
-    private float ProcessVolume()
+    private float ScaleVolumeToFullCircle()
     {
-      return -((float)Value / 100 * 360);
+      return -((float)Value / MAX_VALUE * 360);
     }
 
     private void VolumeControl_Paint(object sender, PaintEventArgs e)
@@ -201,25 +143,26 @@ namespace mediaController.control
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
     private void VolumeControl_MouseMove(object sender, MouseEventArgs e)
     {
       if (!changingValue)
       {
         return;
       }
-      Point actualPosition = Cursor.Position;
-      int newValue = originalValue + (actualPosition.X - cursorInit.X);
-      if (newValue < 0)
+      mouseMoved = true;
+      int valueVariation = Cursor.Position.X - cursorInit.X;
+      this.Value = originalValue + valueVariation;
+      NotifyPropertyChanged("value");
+      this.Invalidate(this.Region);
+    }
+
+    private void VolumeControl_Click(object sender, EventArgs e)
+    {
+      if (!mouseMoved)
       {
-        newValue = 0;
+        muted = !muted;
+        NotifyPropertyChanged("muted");
       }
-      else if (newValue > 100)
-      {
-        newValue = 100;
-      }
-      this.value = newValue;
-      NotifyPropertyChanged();
       this.Invalidate(this.Region);
     }
   }
