@@ -1,4 +1,6 @@
-﻿using System;
+﻿using mediaController.Classes;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -68,12 +70,29 @@ namespace mediaController.control
     private void InitializeExternalVariables()
     {
       // TODO: change code for any shape, might be possible with collor mapping
-      GraphicsPath grPath = new GraphicsPath();
-      grPath.AddEllipse(0, 0, this.Size.Width, this.Size.Height);
-      this.Region = new System.Drawing.Region(grPath);
+      setRegion();
       Muted = false;
       pen = new Pen(valueColor, Math.Max(this.Size.Width,this.Size.Height)*0.08F);
       rectangle = new Rectangle(2, 2, this.Size.Width - 4, this.Size.Height - 4);
+    }
+
+    public void setRegion()
+    {
+      BorderFinder borderFinder = new BorderFinder();
+      List<Point[]> borderPoints = borderFinder.Find(buttonStatus[0][0]);
+
+      Matrix scaleMatrix = new Matrix();
+      scaleMatrix.Scale(
+        1.0F * this.Size.Width / buttonStatus[0][0].Width,
+        1.0F * this.Size.Height / buttonStatus[0][0].Height
+      );
+      GraphicsPath grPath = new GraphicsPath();
+      foreach (Point[] p in borderPoints)
+      {
+        grPath.AddPolygon(p);
+      }
+      grPath.Transform(scaleMatrix);
+      this.Region = new System.Drawing.Region(grPath);
     }
     private void UserControl1_MouseHover(object sender, EventArgs e)
     {

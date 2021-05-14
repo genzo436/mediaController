@@ -35,7 +35,7 @@ namespace mediaController.control
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BackColor = System.Drawing.SystemColors.Control;
+      this.BackColor = System.Drawing.Color.Lime;
       this.BackgroundImage = global::mediaController.Properties.Resources.emptyBasic;
       this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
       this.DoubleBuffered = true;

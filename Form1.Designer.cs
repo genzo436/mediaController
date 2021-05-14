@@ -42,6 +42,10 @@ namespace mediaController
       this.playButton = new mediaController.control.TemplateButton();
       this.prevButton = new mediaController.control.TemplateButton();
       this.nextButton = new mediaController.control.TemplateButton();
+      this.minimizeButton = new mediaController.control.TemplateButton();
+      this.closeButton = new mediaController.control.TemplateButton();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
       // 
       // notifyIcon
@@ -53,10 +57,10 @@ namespace mediaController
       // 
       // volumeControl1
       // 
-      this.volumeControl1.BackColor = System.Drawing.SystemColors.Control;
+      this.volumeControl1.BackColor = System.Drawing.Color.Black;
       this.volumeControl1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("volumeControl1.BackgroundImage")));
       this.volumeControl1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.volumeControl1.Location = new System.Drawing.Point(119, 28);
+      this.volumeControl1.Location = new System.Drawing.Point(45, 37);
       this.volumeControl1.Muted = false;
       this.volumeControl1.Name = "volumeControl1";
       this.volumeControl1.Size = new System.Drawing.Size(50, 50);
@@ -66,21 +70,21 @@ namespace mediaController
       // 
       // playButton
       // 
-      this.playButton.BackColor = System.Drawing.SystemColors.Control;
+      this.playButton.BackColor = System.Drawing.Color.Black;
       this.playButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("playButton.BackgroundImage")));
       this.playButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.playButton.Location = new System.Drawing.Point(219, 40);
+      this.playButton.Location = new System.Drawing.Point(145, 49);
       this.playButton.Name = "playButton";
       this.playButton.Size = new System.Drawing.Size(38, 38);
       this.playButton.TabIndex = 7;
-      this.playButton.Click += new System.EventHandler(this.playButton_Click);
+      this.playButton.Click += new System.EventHandler(this.PlayButtonClick);
       // 
       // prevButton
       // 
-      this.prevButton.BackColor = System.Drawing.SystemColors.Control;
+      this.prevButton.BackColor = System.Drawing.Color.Black;
       this.prevButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("prevButton.BackgroundImage")));
       this.prevButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.prevButton.Location = new System.Drawing.Point(175, 40);
+      this.prevButton.Location = new System.Drawing.Point(101, 49);
       this.prevButton.Name = "prevButton";
       this.prevButton.Size = new System.Drawing.Size(38, 38);
       this.prevButton.TabIndex = 8;
@@ -88,28 +92,75 @@ namespace mediaController
       // 
       // nextButton
       // 
-      this.nextButton.BackColor = System.Drawing.SystemColors.Control;
+      this.nextButton.BackColor = System.Drawing.Color.Black;
       this.nextButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("nextButton.BackgroundImage")));
       this.nextButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.nextButton.Location = new System.Drawing.Point(263, 40);
+      this.nextButton.Location = new System.Drawing.Point(189, 49);
       this.nextButton.Name = "nextButton";
       this.nextButton.Size = new System.Drawing.Size(38, 38);
       this.nextButton.TabIndex = 10;
-      this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+      this.nextButton.Click += new System.EventHandler(this.NextButtonClick);
+      // 
+      // minimizeButton
+      // 
+      this.minimizeButton.BackColor = System.Drawing.Color.Black;
+      this.minimizeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("minimizeButton.BackgroundImage")));
+      this.minimizeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+      this.minimizeButton.Location = new System.Drawing.Point(186, 32);
+      this.minimizeButton.Name = "minimizeButton";
+      this.minimizeButton.Size = new System.Drawing.Size(15, 15);
+      this.minimizeButton.TabIndex = 11;
+      this.minimizeButton.Click += new System.EventHandler(this.MinimizeButtonClick);
+      // 
+      // closeButton
+      // 
+      this.closeButton.BackColor = System.Drawing.Color.Black;
+      this.closeButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("closeButton.BackgroundImage")));
+      this.closeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+      this.closeButton.Location = new System.Drawing.Point(206, 32);
+      this.closeButton.Name = "closeButton";
+      this.closeButton.Size = new System.Drawing.Size(15, 15);
+      this.closeButton.TabIndex = 12;
+      this.closeButton.Click += new System.EventHandler(this.CloseButtonClick);
+      // 
+      // pictureBox1
+      // 
+      this.pictureBox1.BackgroundImage = global::mediaController.Properties.Resources.baseSimple;
+      this.pictureBox1.Location = new System.Drawing.Point(0, -1);
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.Size = new System.Drawing.Size(285, 106);
+      this.pictureBox1.TabIndex = 13;
+      this.pictureBox1.TabStop = false;
+      this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormMouseDown);
       // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(615, 353);
+      this.BackColor = System.Drawing.Color.Lime;
+      this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+      this.ClientSize = new System.Drawing.Size(362, 170);
+      this.ControlBox = false;
+      this.Controls.Add(this.closeButton);
+      this.Controls.Add(this.minimizeButton);
       this.Controls.Add(this.nextButton);
       this.Controls.Add(this.prevButton);
       this.Controls.Add(this.playButton);
       this.Controls.Add(this.volumeControl1);
+      this.Controls.Add(this.pictureBox1);
+      this.DoubleBuffered = true;
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
       this.Name = "Form1";
+      this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Form1";
-      this.TransparencyKey = System.Drawing.Color.DimGray;
+      this.TopMost = true;
+      this.TransparencyKey = System.Drawing.Color.Transparent;
+      this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormMouseDown);
       this.Resize += new System.EventHandler(this.Form1Resize);
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -121,6 +172,9 @@ namespace mediaController
     private control.TemplateButton playButton;
     private control.TemplateButton prevButton;
     private control.TemplateButton nextButton;
+    private control.TemplateButton minimizeButton;
+    private control.TemplateButton closeButton;
+    private System.Windows.Forms.PictureBox pictureBox1;
   }
 }
 

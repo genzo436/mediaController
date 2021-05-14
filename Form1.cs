@@ -1,6 +1,8 @@
 ﻿using mediaController.Classes;
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace mediaController
@@ -11,14 +13,17 @@ namespace mediaController
     MediaController playbackDevice;
     public Form1()
     {
-      playbackDevice = new MediaController();  
       InitializeComponent();
       ChangeButtonImages();
       notifyIcon.Visible = false;
 
+      playbackDevice = new MediaController();
       volumeControl1.Value = playbackDevice.GetVolume();
       volumeControl1.Muted = playbackDevice.IsMuted();
+
+      this.TransparencyKey = this.BackColor;
     }
+
 
     public void ChangeButtonImages()
     {
@@ -70,20 +75,44 @@ namespace mediaController
           break;
       }
     }
-
     private void PrevButtonClick(object sender, EventArgs e)
     {
       playbackDevice.PreviousTrack();
     }
-
-    private void playButton_Click(object sender, EventArgs e)
+    private void PlayButtonClick(object sender, EventArgs e)
     {
       playbackDevice.PlayPause();
     }
-
-    private void nextButton_Click(object sender, EventArgs e)
+    private void NextButtonClick(object sender, EventArgs e)
     {
       playbackDevice.NextTrack();
+    }
+    /*Moving Form Without borders*/
+    public const int WM_NCLBUTTONDOWN = 0xA1;
+    public const int HT_CAPTION = 0x2;
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    public static extern bool ReleaseCapture();
+    private void FormMouseDown(object sender, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Left)
+      {
+        ReleaseCapture();
+        SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+      }
+    }
+    private void MinimizeButtonClick(object sender, EventArgs e)
+    {
+      this.WindowState = FormWindowState.Minimized;
+      this.Hide();
+      notifyIcon.Visible = true;
+    }
+
+    private void CloseButtonClick(object sender, EventArgs e)
+    {
+      this.Close();
     }
   }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using mediaController.Classes;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -36,9 +38,20 @@ namespace mediaController.control
     }
     private void SetControlRegion()
     {
-      // TODO: change code for any shape, might be possible with collor mapping
+      BorderFinder borderFinder = new BorderFinder();
+      List<Point[]> borderPoints = borderFinder.Find(statusImages[(int)Status.INACTIVE]);
+
+      Matrix scaleMatrix = new Matrix();
+      scaleMatrix.Scale(
+        1.0F * this.Size.Width / statusImages[(int)Status.INACTIVE].Width,
+        1.0F * this.Size.Height / statusImages[(int)Status.INACTIVE].Height
+      );
       GraphicsPath grPath = new GraphicsPath();
-      grPath.AddEllipse(0, 0, this.Size.Width, this.Size.Height);
+      foreach (Point[] p in borderPoints)
+      {
+        grPath.AddPolygon(p);
+      }
+      grPath.Transform(scaleMatrix);
       this.Region = new System.Drawing.Region(grPath);
     }
     private void UserControlMouseHover(object sender, EventArgs e)
